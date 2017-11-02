@@ -4,6 +4,9 @@ const fastify = require('fastify')()
 fastify.register(require('fastify-jwt'), { secret: 'supersecret' }, err => {
     if (err) throw err
 })
+fastify.register(require('fastify-formbody'), {}, (err) => {
+    if (err) throw err
+  })
 
 function auth(req, reply) {
     let token = req.headers['x-access-token']
@@ -18,38 +21,20 @@ function auth(req, reply) {
     }
 }
 
-// Declare a route
-fastify.get('/', function (request, reply) {
-  reply.send({ hello: 'world' })
-})
-
 fastify.get('/api/hello', function(request, reply) {
     auth(request, reply)
     reply.send({auth: 1})
 })
 
-fastify.get('/sigin', function(request, reply) {
-    const {userName, password} = request.query || {}
-    console.log(userName)
-    if (userName == 'admin' && password == '123456') {
-         const token = fastify.jwt.sign(userName);
-         reply.send({token: token})
-    }
-    reply.send({message: 'Authenticate failed'})
+fastify.post('/api/sigin', function(request, reply) {
+    const {name, password} = request.body || {}
+    if (name == 'admin' && password == '123456') {
+         const token = fastify.jwt.sign(name);
+         return reply.code(200).send({token: token})
+    } 
+    reply.code(403).send({message: 'Authenticate failed'})
 })
 
-// fastify.register(function (instance, options, next) {
-//     // the route will be '/api/hello'
-    
-//     instance.get('/hello', (req, reply) => {
-//       var token = req.body.token || req.query.token || req.headers['x-access-token']
-//       fastify.jwt.verify()
-//       reply.send({ greet: 'hello' })
-//     })
-//     next()
-//   }, { prefix: '/api' })
-
-// Run the server!
 fastify.listen(3000, function (err) {
   if (err) throw err
   console.log(`server listening on ${fastify.server.address().port}`)

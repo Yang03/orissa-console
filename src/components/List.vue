@@ -26,7 +26,6 @@
 		},
         methods: {
             fetchData() {
-                   const _this = this 
                    request.get ('/api/hello').then(response => {
                        console.log(response)  
                    })

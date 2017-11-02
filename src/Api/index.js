@@ -7,6 +7,7 @@ export const request = axios.create({
 	transformRequest: [function (data) {
 		return qs.stringify(data)
 	}],
+	headers: {'x-access-token': localStorage.getItem('x-access-token')}
 })
 
 request.interceptors.response.use(response => {
