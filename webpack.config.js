@@ -48,9 +48,20 @@ module.exports = {
     new NpmInstallPlugin()
   ],
   devServer: {
+    // historyApiFallback: true,
+    // disableHostCheck: true,
+    // noInfo: true,
     historyApiFallback: true,
-    disableHostCheck: true,
-    noInfo: true
+    stats: "minimal",
+    proxy: {
+      "/api/**": {
+        target: "http://localhost:3000",
+        secure: true
+        // pathRewrite: {
+        //   '^/api': ''
+        //   }
+      }
+    }
   },
   devtool: '#eval-source-map'
 }
